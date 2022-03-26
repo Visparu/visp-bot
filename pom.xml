@@ -1,0 +1,164 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.visparu</groupId>
+	<artifactId>visp-bot</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<properties>
+		<mainClass>com.visparu.vispbot.VispBot</mainClass>
+		<shadeTransformer>org.apache.maven.plugins.shade.resource.ManifestResourceTransformer</shadeTransformer>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<spring.version>5.3.16</spring.version>
+		<spring-boot.version>2.6.4</spring-boot.version>
+		<jda.version>5.0.0-alpha.9</jda.version>
+		<jackson.version>2.13.2</jackson.version>
+		<log4j.version>2.17.2</log4j.version>
+		<junit.version>5.8.2</junit.version>
+
+		<java.version>17</java.version>
+		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>dv8tion</id>
+			<name>m2-dv8tion</name>
+			<url>https://m2.dv8tion.net/releases</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot</artifactId>
+			<version>${spring-boot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure</artifactId>
+			<version>${spring-boot.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.dv8tion</groupId>
+			<artifactId>JDA</artifactId>
+			<version>${jda.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>club.minnced</groupId>
+					<artifactId>opus-java</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-yaml</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>${junit.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>${maven-shade-plugin.version}</version>
+				<configuration>
+					<transformers>
+						<transformer implementation="${shadeTransformer}">
+							<mainClass>${mainClass}</mainClass>
+							<manifestEntries>
+								<Multi-Release>true</Multi-Release>
+							</manifestEntries>
+						</transformer>
+					</transformers>
+					<createDependencyReducedPom>false</createDependencyReducedPom>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
