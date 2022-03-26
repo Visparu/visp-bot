@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.visparu.vispbot.commands.ArgumentMapper;
 import com.visparu.vispbot.commands.Command;
@@ -24,8 +23,8 @@ import com.visparu.vispbot.commands.root.visp.VispStartSubCommand;
 import com.visparu.vispbot.commands.root.visp.VispTResetSubCommand;
 import com.visparu.vispbot.exceptions.ExternalException;
 import com.visparu.vispbot.exceptions.external.NoSuchSubCommandException;
+import com.visparu.vispbot.records.io.BotOutput;
 
-@Component
 public class VispCommand implements Command
 {
 	@Autowired
@@ -40,12 +39,6 @@ public class VispCommand implements Command
 			.withValueName("sub command")
 			.withDescription(this.createSubCommandDescription())
 			.withMandatory(true)
-			.build());
-		this.commandArguments.add(CommandArgument.builder()
-			.withShortName('h')
-			.withLongName("help")
-			.withDescription("Display this help menu, or the help menu for a specific sub command.")
-			.withMandatory(false)
 			.build());
 		this.commandArguments.add(CommandArgument.builder()
 			.withShortName('t')
@@ -68,7 +61,7 @@ public class VispCommand implements Command
 		StringJoiner sj = new StringJoiner("\n");
 		sj.add("Available sub commands:");
 		this.subCommands.forEach(subCommand -> sj.add(String.format("  - %-" + longestNameLength + "s (%s)", subCommand.getCommandName(), subCommand.getShortCommandDescription())));
-		sj.add("  For more information on a specific sub command, please use 'visp <sub command> -h'");
+		sj.add("  For more information on a specific sub command, please use 'visp <sub command> help'");
 		return sj.toString();
 	}
 	
@@ -102,12 +95,24 @@ public class VispCommand implements Command
 	}
 	
 	@Override
-	public String execute(String[] args) throws ExternalException
+	public BotOutput execute(String[] args) throws ExternalException
 	{
 		ArgumentMapper argumentMapper = new ArgumentMapper(this.commandArguments);
-		argumentMapper.mapArguments(args);
+		try
+		{
+			argumentMapper.mapArguments(args);
+		}
+		catch (ExternalException e)
+		{
+			return new BotOutput(this.createCommandHelp(), e.getExternalMessage());
+		}
 		
-		String targetSubCommand = argumentMapper.getUnnamedArgumentValues().get(0);
+		if(argumentMapper.getUnnamedArgumentValues().size() < 2)
+		{
+			return new BotOutput(this.createCommandHelp(), null);
+		}
+		
+		String targetSubCommand = argumentMapper.getUnnamedArgumentValues().get(1);
 		
 		Command matchingSubCommand = subCommands.stream()
 			.filter(subCommand -> subCommand.getCommandName().equals(targetSubCommand))
@@ -132,12 +137,7 @@ public class VispCommand implements Command
 		this.subCommands = List.copyOf(tempVispSubCommands);
 		
 		this.initialize();
-		
-		System.out.println(this.createCommandHelp());
-		
-		ArgumentMapper argumentMapper = new ArgumentMapper(this.commandArguments);
-		argumentMapper.mapArguments("visp --test lol start -h".split(" "));
-		System.out.println(argumentMapper.getArgumentMap());
-		System.out.println(argumentMapper.getUnnamedArgumentValues());
+	
+		System.out.println(this.execute("visp start".split(" ")));
 	}
 }

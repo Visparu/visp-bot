@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.visparu.vispbot.commands.Command;
 import com.visparu.vispbot.commands.CommandArgument;
+import com.visparu.vispbot.records.io.BotOutput;
 
 public class VispInitializeSubCommand implements Command
 {
@@ -33,7 +34,7 @@ public class VispInitializeSubCommand implements Command
 	}
 
 	@Override
-	public String execute(String[] args)
+	public BotOutput execute(String[] args)
 	{
 		// TODO
 		return null;

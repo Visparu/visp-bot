@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.visparu.vispbot.exceptions.ExternalException;
 import com.visparu.vispbot.exceptions.external.MissingArgumentValueException;
@@ -25,6 +26,20 @@ public class ArgumentMapper
 	public Map<CommandArgument, String> getArgumentMap()
 	{
 		return this.argumentMap;
+	}
+	
+	public String getArgumentValue(String argumentLongName)
+	{
+		Entry<CommandArgument, String> entry = this.argumentMap.entrySet().stream()
+			.filter(e -> e.getKey().getLongName().equals(argumentLongName))
+			.findFirst()
+			.orElse(null);
+		
+		if(entry == null)
+		{
+			return null;
+		}
+		return entry.getValue();
 	}
 	
 	public List<String> getUnnamedArgumentValues()

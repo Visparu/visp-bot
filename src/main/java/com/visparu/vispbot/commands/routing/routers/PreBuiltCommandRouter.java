@@ -13,6 +13,7 @@ import com.visparu.vispbot.commands.routing.CommandRouter;
 import com.visparu.vispbot.exceptions.ExternalException;
 import com.visparu.vispbot.exceptions.external.InvalidCommandException;
 import com.visparu.vispbot.exceptions.external.NoSuchCommandException;
+import com.visparu.vispbot.records.io.BotOutput;
 
 public class PreBuiltCommandRouter implements CommandRouter
 {
@@ -45,7 +46,7 @@ public class PreBuiltCommandRouter implements CommandRouter
 	}
 	
 	@Override
-	public String route(String[] args) throws ExternalException
+	public BotOutput route(String[] args) throws ExternalException
 	{
 		if (args.length < 1)
 		{

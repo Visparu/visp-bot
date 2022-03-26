@@ -5,6 +5,7 @@ import java.util.StringJoiner;
 
 import com.visparu.vispbot.exceptions.ExternalException;
 import com.visparu.vispbot.exceptions.external.NoSuchArgumentException;
+import com.visparu.vispbot.records.io.BotOutput;
 
 public interface Command
 {
@@ -15,19 +16,17 @@ public interface Command
 	String getLongCommandDescription();
 	
 	List<CommandArgument> getCommandArguments();
-		
-	String execute(String[] args) throws ExternalException;
+	
+	BotOutput execute(String[] args) throws ExternalException;
 	
 	default String createCommandHelp()
 	{
 		StringJoiner sj = new StringJoiner("\n");
-		sj.add("```");
 		sj.add(String.format("Help menu for command '%s'.", this.getCommandName()));
 		sj.add("");
 		sj.add(this.createCommandHelpUsage());
 		sj.add("");
 		sj.add(this.createArgumentDescriptions());
-		sj.add("```");
 		
 		return sj.toString();
 	}

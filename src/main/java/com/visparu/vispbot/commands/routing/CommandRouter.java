@@ -5,6 +5,7 @@ import java.util.Map;
 import com.visparu.vispbot.commands.Command;
 import com.visparu.vispbot.exceptions.ExternalException;
 import com.visparu.vispbot.exceptions.external.NoSuchCommandException;
+import com.visparu.vispbot.records.io.BotOutput;
 
 public interface CommandRouter
 {
@@ -12,5 +13,5 @@ public interface CommandRouter
 	
 	Command findCommandByName(String commandName) throws NoSuchCommandException;
 	
-	String route(String[] args) throws ExternalException;
+	BotOutput route(String[] args) throws ExternalException;
 }

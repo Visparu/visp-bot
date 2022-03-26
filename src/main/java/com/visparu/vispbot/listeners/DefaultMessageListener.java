@@ -1,5 +1,7 @@
 package com.visparu.vispbot.listeners;
 
+import java.util.StringJoiner;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import com.visparu.vispbot.commands.routing.CommandRouter;
 import com.visparu.vispbot.config.ConfigurationLoader;
 import com.visparu.vispbot.exceptions.ExternalException;
+import com.visparu.vispbot.records.io.BotOutput;
 
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -58,23 +61,39 @@ public class DefaultMessageListener extends ListenerAdapter
 		String[] commandArgs     = strippedCommand.split(" ");
 		try
 		{
-			String rawResponse     = this.commandRouter.route(commandArgs);
-			String responseContent = this.buildResponseContent(rawResponse);
+			BotOutput rawResponse     = this.commandRouter.route(commandArgs);
+			String    responseContent = this.buildResponseContent(rawResponse);
 			event.getMessage()
 				.reply(responseContent)
 				.complete();
 		}
 		catch (ExternalException e)
 		{
-			String responseContent = this.buildResponseContent(e.getExternalMessage());
+			BotOutput responseData = new BotOutput(null, e.getExternalMessage());
+			String rawResponse = this.buildResponseContent(responseData);
 			event.getMessage()
-				.reply(responseContent)
+				.reply(rawResponse)
 				.complete();
 		}
 	}
 	
-	private String buildResponseContent(String message)
+	private String buildResponseContent(BotOutput botOutput)
 	{
-		return String.format("```%n%s%n```", message);
+		StringJoiner sj = new StringJoiner("\n");
+		if (botOutput == null)
+		{
+			return String.format("```%nError: This module is not implemented yet!%n```");
+		}
+		if (botOutput.getErrorString() != null)
+		{
+			String rawErrorOutput = String.format("```%n%s%n```", botOutput.getErrorString());
+			sj.add(rawErrorOutput);
+		}
+		if (botOutput.getPayloadString() != null)
+		{
+			String rawPayloadOutput = String.format("```%n%s%n```", botOutput.getPayloadString());
+			sj.add(rawPayloadOutput);
+		}
+		return sj.toString();
 	}
 }
