@@ -12,7 +12,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<spring.version>5.3.22</spring.version>
-		<spring-boot.version>2.7.3</spring-boot.version>
+		<spring-boot.version>2.7.12</spring-boot.version>
 		<jda.version>5.0.0-alpha.18</jda.version>
 		<jackson.version>2.13.2.1</jackson.version>
 		<log4j.version>2.18.0</log4j.version>
